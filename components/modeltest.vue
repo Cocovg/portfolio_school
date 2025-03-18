@@ -29,12 +29,24 @@ onMounted(() => {
   controls.enableZoom = true
 
   // Licht
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
+  const ambientLight = new THREE.AmbientLight(0x404040, 1.5)
   scene.add(ambientLight)
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8)
-  directionalLight.position.set(5, 10, 7.5)
-  scene.add(directionalLight)
+  const mainLight = new THREE.DirectionalLight(0xffffff, 1)
+  mainLight.position.set(10, 10, 10)
+  scene.add(mainLight)
+
+  const fillLight = new THREE.DirectionalLight(0xffffff, 0.5)
+  fillLight.position.set(-10, 0, -10)
+  scene.add(fillLight)
+
+  const rimLight = new THREE.DirectionalLight(0xffffff, 0.3)
+  rimLight.position.set(0, 10, -10)
+  scene.add(rimLight)
+
+  const pointLight = new THREE.PointLight(0xffffff, 0.5)
+  pointLight.position.set(2, 5, 5)
+  scene.add(pointLight)
 
   // Laad het head.glb model
   const loader = new GLTFLoader()
