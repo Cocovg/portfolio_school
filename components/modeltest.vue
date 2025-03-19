@@ -29,29 +29,33 @@ onMounted(() => {
   controls.enableZoom = true
 
   // Licht
-  const ambientLight = new THREE.AmbientLight(0x404040, 1.5)
+  const ambientLight = new THREE.AmbientLight(0x404040, 0.5)
   scene.add(ambientLight)
 
-  const mainLight = new THREE.DirectionalLight(0xffffff, 1)
+  const mainLight = new THREE.DirectionalLight(0xff9966, 1.2)
   mainLight.position.set(10, 10, 10)
   scene.add(mainLight)
 
-  const fillLight = new THREE.DirectionalLight(0xffffff, 0.5)
+  const fillLight = new THREE.DirectionalLight(0x6699ff, 0.8)
   fillLight.position.set(-10, 0, -10)
   scene.add(fillLight)
 
-  const rimLight = new THREE.DirectionalLight(0xffffff, 0.3)
+  const rimLight = new THREE.DirectionalLight(0xff66ff, 0.6)
   rimLight.position.set(0, 10, -10)
   scene.add(rimLight)
 
-  const pointLight = new THREE.PointLight(0xffffff, 0.5)
-  pointLight.position.set(2, 5, 5)
-  scene.add(pointLight)
+  const pointLight1 = new THREE.PointLight(0x00ff00, 0.8, 15)
+  pointLight1.position.set(2, 5, 5)
+  scene.add(pointLight1)
+
+  const pointLight2 = new THREE.PointLight(0xff0066, 0.8, 15)
+  pointLight2.position.set(-2, 3, -5)
+  scene.add(pointLight2)
 
   // Laad het head.glb model
   const loader = new GLTFLoader()
   loader.load(
-      '/models/head6.glb',
+      '/models/flowers.glb',
       (gltf) => {
         const model = gltf.scene
         model.scale.set(1, 1, 1) // pas schaal aan indien nodig
@@ -67,6 +71,14 @@ onMounted(() => {
   // Animation loop
   const animate = () => {
     requestAnimationFrame(animate)
+    
+    const time = Date.now() * 0.001
+    pointLight1.position.x = Math.sin(time) * 5
+    pointLight1.position.z = Math.cos(time) * 5
+    
+    pointLight2.position.x = Math.sin(time + Math.PI) * 5
+    pointLight2.position.z = Math.cos(time + Math.PI) * 5
+    
     controls.update()
     renderer.render(scene, camera)
   }
