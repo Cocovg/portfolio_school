@@ -1,7 +1,9 @@
 <template>
-  <modeltest />
+  <ClientOnly>
+    <ThreeScene />
+  </ClientOnly>
 </template>
 
-<script>
-import ThreeScene from '~/components/modeltest.vue'
+<script setup>
+import ThreeScene from '@/components/ThreeScene.vue'
 </script>
