@@ -55,7 +55,7 @@ onMounted(() => {
   // Laad het head.glb model
   const loader = new GLTFLoader()
   loader.load(
-      '/models/flowers.glb',
+      '/models/glass7.glb',
       (gltf) => {
         const model = gltf.scene
         model.scale.set(1, 1, 1) // pas schaal aan indien nodig

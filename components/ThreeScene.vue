@@ -29,17 +29,30 @@ onMounted(() => {
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
 
-  // Lights
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+  // Licht
+  const ambientLight = new THREE.AmbientLight(0x404040, 0.5)
   scene.add(ambientLight)
 
-  const redLight = new THREE.PointLight(0xFF14C0, 1, 10)
-  redLight.position.set(2, 2, 2)
-  scene.add(redLight)
+  const mainLight = new THREE.DirectionalLight(0xff9966, 1.2)
+  mainLight.position.set(10, 10, 10)
+  scene.add(mainLight)
 
-  const greenLight = new THREE.PointLight(0x00ff00, 1, 10)
-  greenLight.position.set(-2, 2, 2)
-  scene.add(greenLight)
+  const fillLight = new THREE.DirectionalLight(0x6699ff, 0.8)
+  fillLight.position.set(-10, 0, -10)
+  scene.add(fillLight)
+
+  const rimLight = new THREE.DirectionalLight(0xff66ff, 0.6)
+  rimLight.position.set(0, 10, -10)
+  scene.add(rimLight)
+
+  const pointLight1 = new THREE.PointLight(0x00ff00, 0.8, 15)
+  pointLight1.position.set(2, 5, 5)
+  scene.add(pointLight1)
+
+  const pointLight2 = new THREE.PointLight(0xff0066, 0.8, 15)
+  pointLight2.position.set(-2, 3, -5)
+  scene.add(pointLight2)
+
 
   // Load head.glb
   const loader = new GLTFLoader()
@@ -129,6 +142,23 @@ onMounted(() => {
 }
 
   animate()
+
+  // Animation loop
+  const lightAnimate = () => {
+    requestAnimationFrame(lightAnimate)
+    
+    const time = Date.now() * 0.001
+    pointLight1.position.x = Math.sin(time) * 5
+    pointLight1.position.z = Math.cos(time) * 5
+    
+    pointLight2.position.x = Math.sin(time + Math.PI) * 5
+    pointLight2.position.z = Math.cos(time + Math.PI) * 5
+    
+    controls.update()
+    renderer.render(scene, camera)
+  }
+
+  lightAnimate()
 
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight
