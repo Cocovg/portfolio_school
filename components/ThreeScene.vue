@@ -33,7 +33,7 @@ onMounted(() => {
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
   scene.add(ambientLight)
 
-  const redLight = new THREE.PointLight(0xff0000, 1, 10)
+  const redLight = new THREE.PointLight(0xFF14C0, 1, 10)
   redLight.position.set(2, 2, 2)
   scene.add(redLight)
 
@@ -43,7 +43,7 @@ onMounted(() => {
 
   // Load head.glb
   const loader = new GLTFLoader()
-  loader.load('/models/flowers.glb', (gltf) => {
+  loader.load('/models/glass7.glb', (gltf) => {
     const model = gltf.scene
     model.scale.set(1, 1, 1)
     model.traverse((child) => {
