@@ -104,7 +104,7 @@ onMounted(() => {
   controls.enableDamping = true
 
   // Licht
-  const ambientLight = new THREE.AmbientLight(0x404040, 0.5)
+  const ambientLight = new THREE.AmbientLight(0x27BEFF, 0.5)
   scene.add(ambientLight)
 
   const mainLight = new THREE.DirectionalLight(0xff0066, 1.2)
@@ -119,7 +119,7 @@ onMounted(() => {
   rimLight.position.set(0, 10, -10)
   scene.add(rimLight)
 
-  const pointLight1 = new THREE.PointLight(0xFFF200, 0.8, 15)
+  const pointLight1 = new THREE.PointLight(0x27BEFF, 0.8, 15)
   pointLight1.position.set(2, 5, 5)
   scene.add(pointLight1)
 
