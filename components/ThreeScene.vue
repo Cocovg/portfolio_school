@@ -12,7 +12,44 @@ import { usePathPoints } from '@/composables/usePathPoints.js'
 const sceneContainer = ref(null)
 
 let targetCameraPos = null
+let camera = null
+let popupPlane = null
+let popupText = null
 
+// Function to create popup content
+const createPopupContent = (title, content) => {
+  // Create canvas for text
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')
+  canvas.width = 512
+  canvas.height = 256
+
+  // Set background
+  context.fillStyle = 'rgba(255, 255, 255, 0.9)'
+  context.fillRect(0, 0, canvas.width, canvas.height)
+
+  // Add text
+  context.fillStyle = '#000000'
+  context.font = 'bold 32px Arial'
+  context.fillText(title, 20, 40)
+
+  context.font = '24px Arial'
+  context.fillText(content, 20, 80)
+
+  // Create texture from canvas
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.needsUpdate = true
+
+  // Create plane geometry
+  const geometry = new THREE.PlaneGeometry(1, 0.5)
+  const material = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true,
+    side: THREE.DoubleSide
+  })
+
+  return new THREE.Mesh(geometry, material)
+}
 
 onMounted(() => {
   const scene = new THREE.Scene()
@@ -55,7 +92,7 @@ onMounted(() => {
   const starField = new THREE.Points(starGeometry, starMaterial)
   scene.add(starField)
 
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
   camera.position.set(0, 1, 4)
 
   const renderer = new THREE.WebGLRenderer({ antialias: true })
@@ -140,20 +177,38 @@ onMounted(() => {
   const mouse = new THREE.Vector2()
 
   const onClick = (event) => {
-  const rect = renderer.domElement.getBoundingClientRect()
-  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
-  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+    const rect = renderer.domElement.getBoundingClientRect()
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
 
-  raycaster.setFromCamera(mouse, camera)
-  const intersects = raycaster.intersectObjects(clickablePoints)
+    raycaster.setFromCamera(mouse, camera)
+    const intersects = raycaster.intersectObjects(clickablePoints)
 
-  if (intersects.length > 0) {
-    const clicked = intersects[0].object
-    const targetPos = new THREE.Vector3().copy(clicked.position).add(new THREE.Vector3(0, 0.5, 1.5)) // camera offset
-    targetCameraPos = targetPos
+    if (intersects.length > 0) {
+      const clicked = intersects[0].object
+      const targetPos = new THREE.Vector3().copy(clicked.position).add(new THREE.Vector3(0, 0.5, 1.5))
+      targetCameraPos = targetPos
+
+      // Remove existing popup if any
+      if (popupPlane) {
+        scene.remove(popupPlane)
+      }
+
+      // Create new popup
+      const title = `Point ${clicked.userData.id}`
+      const content = `This is a sample content for point ${clicked.userData.id}. You can customize this content as needed.`
+      popupPlane = createPopupContent(title, content)
+      
+      // Position popup above the clicked point
+      popupPlane.position.copy(clicked.position)
+      popupPlane.position.y += 0.2 // Offset above the point
+      
+      // Make popup face the camera
+      popupPlane.lookAt(camera.position)
+      
+      scene.add(popupPlane)
+    }
   }
-}
-
 
   renderer.domElement.addEventListener('click', onClick)
 
@@ -194,6 +249,11 @@ onMounted(() => {
       }
 
       camera.lookAt(0, 0.5, 0) // Keep looking at center of model
+    }
+
+    // Update popup orientation to face camera
+    if (popupPlane) {
+      popupPlane.lookAt(camera.position)
     }
 
     controls.update()
